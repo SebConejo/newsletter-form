@@ -4,16 +4,22 @@ import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import Manifest from '@mnfst/sdk'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 export default function Home() {
   const [alertVisible, setAlertVisible] = useState(false) // State to manage alert visibility
-  const [alertMessage, setAlertMessage] = useState('') // messsage to display in the alert
+  const [alertMessage, setAlertMessage] = useState('') // Message to display in the alert
+  const [isClient, setIsClient] = useState(false) // State to check if the component is rendering on the client
+
+  useEffect(() => {
+    // Set isClient to true only when rendered on the client
+    setIsClient(true)
+  }, [])
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
-    // Récupérer l'email depuis l'input
+    // Retrieve email from the input field
     const form = e.currentTarget as HTMLFormElement
     const emailInput = form.querySelector(
       'input[name="email"]'
@@ -23,6 +29,7 @@ export default function Home() {
     if (!email) {
       setAlertMessage('Please enter a valid email.')
       setAlertVisible(true)
+      setTimeout(() => setAlertVisible(false), 3000) // Hide the alert after 3 seconds
       return
     }
 
@@ -31,15 +38,17 @@ export default function Home() {
       .from('subscribers')
       .create({ email })
       .then(() => {
-        form.reset() // Réinitialiser le champ d'email après succès
+        form.reset() // Reset the email input field after success
         setAlertMessage(
           'Successfully subscribed! We will contact you if you are selected.'
         )
-        setAlertVisible(true) // Display success alert
+        setAlertVisible(true) // Show success alert
+        setTimeout(() => setAlertVisible(false), 3000) // Hide the alert after 3 seconds
       })
       .catch((error) => {
         setAlertMessage(`Failed to add subscriber: ${error.message || error}`)
-        setAlertVisible(true) // Display error alert
+        setAlertVisible(true) // Show error alert
+        setTimeout(() => setAlertVisible(false), 3000) // Hide the alert after 3 seconds
       })
   }
 
@@ -70,8 +79,8 @@ export default function Home() {
               Sent out weekly on Mondays. Always free.
             </p>
           </form>
-          {/* Affichage de l'alerte en fonction de l'état alertVisible */}
-          {alertVisible && (
+          {/* Display the alert only if rendered on client-side */}
+          {isClient && alertVisible && (
             <Alert className="absolute bottom-[-90px] bg-teal-300 border-teal-400 text-teal-800">
               <AlertDescription>{alertMessage}</AlertDescription>
             </Alert>
