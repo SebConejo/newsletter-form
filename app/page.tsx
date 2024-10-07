@@ -4,17 +4,11 @@ import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import Manifest from '@mnfst/sdk'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 export default function Home() {
   const [alertVisible, setAlertVisible] = useState(false) // State to manage alert visibility
   const [alertMessage, setAlertMessage] = useState('') // Message to display in the alert
-  const [isClient, setIsClient] = useState(false) // State to check if the component is rendering on the client
-
-  useEffect(() => {
-    // Set isClient to true only when rendered on the client
-    setIsClient(true)
-  }, [])
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -79,8 +73,8 @@ export default function Home() {
               Sent out weekly on Mondays. Always free.
             </p>
           </form>
-          {/* Display the alert only if rendered on client-side */}
-          {isClient && alertVisible && (
+          {/* Display the alert based on alertVisible state */}
+          {alertVisible && (
             <Alert className="absolute bottom-[-90px] bg-teal-300 border-teal-400 text-teal-800">
               <AlertDescription>{alertMessage}</AlertDescription>
             </Alert>
