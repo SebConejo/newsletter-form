@@ -1,0 +1,5 @@
+name: Newsletter Form
+entities:
+  Subscriber:
+    properties:
+      - { name: email, type: email }
